@@ -1,0 +1,129 @@
+---
+title: "Pricing softdrink with a wholesaler(using temperature vs sales dataset"
+author: "Mayuri.A"
+date: "10-11-2023"
+output:
+  word_document: default
+  html_document: default
+---
+## Problem statement:
+We have to analyze if there is any relationship between temperature in Celsius and sales of soft drink in a particular city in india. This data is is recorded in random throughout the year from a different shops across the city. A particular wholesaler wants  to make deals with different shops for its pricing  in different months. Let us use the given dataset of 30 days and do a complete simple linear regression analysis.
+
+## Objective:
+a. Comment about the different steps involved in building a simple linear regression
+model
+b. Plot the scatter diagram for the data and find coefficient of correlation. .What do
+you infer from the scatter plot?
+c. Estimate the parameters of a simple linear regression model and fit a regression
+line. Interpret the results.
+d. Test the significance of the regression coefficient and interpret the results.
+e. What are the different ways in which u can assess the quality of the fit.
+
+## Introduction:
+Given that there exist a pricing concern with the soft drinks that are to supplied to different shops in a city, we are going to build a simple linear regression model.
+and understand the relation between demand of softdrinks/sales of it and the temperature.
+
+## Variables of interest:
+
+Dependent: sales of the soft drink in lakhs
+independent:temperature in celcius
+
+## Analysis:
+
+### Step1: Visualization and Correlation
+
+Let us plot the graph between the dependent and independent variable to visualize their relation also their correlation to understand the strength of the relation.
+```{r}
+temp=c(23,30,16,30,32,14,40,14,20,15,30,32,38,34,35,21,23,26,28,23,23,30,16,30,32,14,40,14,20,15)
+sales=c(35,39,12,34,36,20,70,18,23,17,45,48,36,37,36,20,21,28,30,32,24,35,17,24,21,26,30,21,24,26)
+plot(temp,sales)
+cor(temp,sales)
+```
+Interpreatation: we get a linear relationship between the independent and dependent variables. and a  strong positive linear relationship is observed from karl pearson correlation coefficient with 0.7147.
+
+## Step2: Fit the model
+```{r}
+reg1=lm(sales~temp)
+reg1 #fitting a sinple regression model
+```
+we got the value of beta(0)=4.3575 and value of beta(1)=0.9951 based on sample. since sign of beta 1 is positive there is a positive relationship between the variables.
+for each additional i degree increase in temperature there is a 0.9951 increase in sales of ice-cream ~1 ice-cream.
+
+## Step 3: Fitting the regression line
+```{r}
+plot(temp,sales)
+abline(reg1) #fitting the regression line Y=4.3575+0.9951*x into the existing scatter plot.
+```
+points-original values of Y.
+line-fitted values of Y.
+the deviation from the each point and line will give the errors.
+
+Now that we have understood the variables, visualized the relationship and measured using karl-peason. We have also estimated beta(0), beta(1) using sample however let us see if it is a significant value and check for its goodness of fit.
+
+##Step4: Summary
+
+the overall fit of the regression model can be obtained with summary command. which is required to devise the hypothesis and goodness of fit
+```{r}
+summary(reg1)
+```
+Hypothesis Testing::
+
+H0= Beta(1)=0
+H1= Beta(1)=! 0
+from the above table the p value in the line of units is 9.1e-06 which is less than 0.05 level of significance.hence we reject null hypothesis and hence beta (1)=! 0 . thus these exist a significant linear relationship between the variables., ie there is a significant linear relationship between temperature  of the day and sales of ice-cream.
+
+Goodness of fit:
+if t value 5.408>> is significantly large than t(calc)=2.048 thus there exist a very strong linear relation.
+alternatively,
+since p value is very small compared to 0.05, thus there exist a very strong linear relation.this is also observed in the graph where the error is very small or (Y and Y hat is very close to each other.)
+hence the model is a good fit.
+
+## Step5: Fitting the observed and redicted values
+
+```{r}
+fit=fitted.values(reg1)
+fit
+plot(sales,fit)
+scatter.smooth(sales,fit,col='red')
+```
+## Step6: Coeffecient of determination
+```{r}
+r=cor(sales,fit)
+r
+r^2
+```
+r^2=0.51 ie,- 51% of the data's total variability is explained by the independent variable of the dependent variable. (note at least 50% of data should be explained-for consideration of prediction.) for it to be a model that can be considered as a good fit.
+according the r^2 ,the model is a good fit for the data.4
+
+
+## Conclusion: 
+We have developed a linear regression model of Y=4.3575+0.9951*X +E this model has been tested for the hypothesis that ,
+H0= Beta(1)=0
+H1= Beta(1)=! 0
+and we have rejected null hypothesis and  concluded that beta 1 is not zero thus there exist a significant relationship between the variables.
+also by calculating the correlation of determination r^2=0,51 the 51% of the data's total variability is explained by the independent variable of the dependent variable.
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+
+```{r}
+
+```

@@ -1,0 +1,105 @@
+---
+title: "Weight Vs Systolic Blood Pressure"
+author: "A.Mayuri(2348133)"
+date: "2023-11-03"
+output: word_document
+---
+# Question: The weight and systolic blood pressure of 26 randomly selected
+males in the age group 25–30 are shown below.
+
+##To Complete:
+1. Obtain the scatter plot and interpret it.
+2. Find a regression line connecting the variables systolic pressure and
+weight. Interpret the plot, intercept term and regression coefficients.What
+do you infer from the sign of regression coefficient?
+3. Obtain the fitted values. Does the sum of fitted values is equal to the sum
+of observed values ?
+
+Based on the above questions, prepare a report with introduction, analysis and
+conclusions.
+
+###Introduction: 
+We are given a dataset of size 26 and this encloses adults of age 25-30. we are given information about their respective weights and systolic BP. 
+
+###Variables of Interest:
+the independent (x) variable is that of the adults weight in pounds and the dependent (y) variable is their systolic BP in mmHg. 
+
+      
+
+
+## Step1 : Import Dataset 
+```{r}
+library(readxl)
+Lab11 <- read_excel("C:/Users/mayur/Desktop/Mstat/Semesters/Tri-sem2/Regression/Dataset/Lab11.xlsx")
+View(Lab11)
+attach(Lab11)
+```
+
+
+## Step2 : Scatter Plot
+```{r}
+plot(Lab11$Weight,Lab11$`Symbolic BP`,col='green',main='Weight Vs Systolic BP',xlab='Weight in pounds',ylab = 'Systolic BP in mmHg')
+```
+Observation: We observer that there exist a positive linear relation between the 2 variables of interest now we will try to understand the magnitude of the same relationship.
+
+## Step3: Correlation
+```{r}
+cor(Lab11$Weight,Lab11$`Symbolic BP`)
+```
+Observation:The correlation coefficient between the two variables is obtained as 0.7734 which is <0.8. Hence the variables have a moderately positive correlation between them.
+
+## Step4: Model
+
+```{r}
+
+model=lm(Lab11$`Symbolic BP`~Lab11$Weight)
+summary(model)
+```
+Interpretation: if Y=B1+B2(x) is the model, then from the above table we observe that 69.10437 is the intercept and the B2 value(slope value) is 0.41942. ie, for a unit change in weight there will be 0.41942 mmHg change in BP.
+Also the positive B2 (Cov(x,y)/Sd(x)*Sd(y)) value shows that there is a positive relationship between the independent variable and the dependent variable.Since the only way for B2 to be positive is when cov(x,y) is positive. 
+
+## Step5: Fitting Model
+
+```{r}
+
+Fit=fitted.values(model)
+Fit
+```
+## Step6 : Fitted Values VS Observed Values
+```{r}
+plot(Lab11$Weight,Lab11$`Symbolic BP`)
+scatter.smooth(Lab11$Weight,Lab11$`Symbolic BP`,col='blue')
+#using the abline command
+abline(lm(Lab11$`Symbolic BP`~Lab11$Weight))
+```
+Interpretation :
+The graph above is the best possible fit for the given data set. It has minimized that sum of square of errors for the observed data set.ie the independent variable - the systolic Blood pressure.
+
+
+
+
+## Step7 : To Verify if sum of observed value equals Fitted Values.
+```{r}
+M=data.frame(Fit)
+M
+sum(M)
+
+sum(Lab11$`Symbolic BP`)
+```
+Here we observe that the sum of systolic pressure under fitted values is same as the observed/recorded values. Hence verified.
+
+# Conclusion: 
+From the above exercise we can conclude the following
+there is a moderate linear positive relationship between weight and systolic BP.
+
+With a correlation coefficient of 0.77. 
+
+The model is of the form : 
+y=B1+B2*X 
+where 
+B1=69.10437
+B2=0.41942
+
+The positive sign of B2 in an indication that the variables have a positive relationship.
+
+ie, an increase in weight can be  associated and can lead to Blood pressure issues. On the contrary there are times where chronic increase in blood pressure due to lack of iodine/salt can push up the weight of a person significantly. this can also be verified by clinical analysis along with regression analysis.
