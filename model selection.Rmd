@@ -1,0 +1,158 @@
+---
+title: "Lab 6 Sales Of A Company"
+author: "A.Mayuri(2348133)"
+date: "2023-12-15"
+output:
+  word_document: default
+  html_document: default
+---
+## Case situation:
+
+  You are a VP of sales and have responsibility for 41 stores.  You have collected data from the stores on advertising costs, store size in square feet, % employee retention, customer satisfaction score, whether a promotion was run or not, and sales.  You want to build a model that can predict sales based on these five variables. 
+
+  Fit a  best multiple linear regression model to predict the sales using the 
+forward selection 
+backward elimination procedure.
+Prepare a report based on the above questions with introduction, analysis, and conclusions.
+
+
+
+## Step1: Import dataset
+
+```{r}
+library(readxl)
+vps <- read_excel("C:/Users/mayur/Desktop/Mstat/Semesters/Tri-sem2/Regression/Dataset/vps.xlsx")
+View(vps)
+attach(vps)
+```
+# Forward selection
+
+## Step2:
+Fit a regression only with the constant term y=b0
+```{r}
+fitstart_1=lm(sales~1,data=vps)
+fitstart_1
+summary(fitstart_1)
+```
+1210 is the intercept 
+
+##Step3:forward procedure
+
+```{r}
+fitall=lm(sales~.,data=vps)
+
+fwd=step(fitstart_1,direction = "forward",scope=formula(fitall))
+fwd
+```
+note: smaller AIC explains better about the variability,
+hence the appropriate model suggested according to forward selection is 
+a regression between dependent variable as sales and regressors as size,promotion,customer satisfaction, advertisement cost and employment retention.
+
+## Step4:Fitting and significance of variable
+
+```{r}
+summary(fwd)
+library(car)
+vif(fwd)
+```
+
+here we observe that the significant variables at a 0.1 level of significance(for convenience) are promotion,customer satisifaction,advertisement cost.
+also all the variables do not have multicollilinearity since vif<5.
+
+## Step5: Choosing the model
+```{r}
+
+fit1=lm(sales~pro+cust_sat+Adv_cost,data=vps)
+fit1
+summary(fit1)
+```
+
+here we observe that all the variables are significant.the adjusted R^2 0.7138 > 0.5 thus the model is significant.
+hence the model is 
+y=-899.82 + 608 * x1 + 45.13 *x2 + 4.456 * x3 + e
+where y = sales
+x1 = promotion
+x2 = customer satisifaction
+x3 = advertisement cost
+
+
+
+## Backward Selection:
+
+```{r}
+fitall=lm(sales~.,data=vps)
+
+bwd2=step(fitall,direction = "backward",scope=formula(fitall))
+bwd2
+```
+note: smaller AIC explains better about the variability,
+hence the appropriate model suggested according to backward selection is 
+a regression between dependent variable as sales and regressors as size,promotion,customer satisfaction, advertisement cost.
+
+
+```{r}
+fit1=lm(sales~pro+cust_sat+Adv_cost,data=vps)
+fit1
+summary(fit1)
+```
+
+here we observe that all the variables are significant.the adjusted R^2 0.7138 > 0.5 thus the model is significant.
+hence the model is 
+y=-899.82 + 608 * x1 + 45.13 *x2 + 4.456 * x3 + e
+where y = sales
+x1 = promotion
+x2 = customer satisifaction
+x3 = advertisement cost
+
+
+general steps
+1) plot the data
+2)cor matrix (multicollinearity, in independent var are actually independent)
+3)fit the model (variable selection model-forward/backward/stepwise)
+4)summary-p-value-significance for different  regressors
+5)multicollinearity-VIF>5
+6)residual analysis - properties of residual
+a)residual vs fitted - linearity, wirt x1,x2,... : var is const or not
+b)testing the assumption- BP , etc
+c)outlier-rstandard- if there exsist an influential pt-affect the slope , remove the outlier and refit the model , from step2.
+d)normality-shapiro wilk test
+e)ACF-AcF plot , DW test (durbin watson test)
+
+
+# Validating the build model
+
+## multicollilinearity
+```{r}
+library(car)
+vif(fit1)
+```
+### Interpretation : 
+Here we observe that all the vif values are less than 5. thus there exsist no multi-collinearity in the model.
+
+
+
+
+
+## Autocorrelation
+```{r}
+residual=resid(fit1)
+acf(residual)
+
+```
+
+### Interpretation:
+
+we observe there exist an auto-correlation in the model.
+thus we need to include correction measures such as,
+1)removing few variables and refitting the model.
+2)relax the assumptions by using transformation.
+3)adopt non linear regression modeling
+
+
+
+
+
+```{r}
+
+
+```

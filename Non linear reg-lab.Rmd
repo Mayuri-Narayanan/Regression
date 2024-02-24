@@ -1,0 +1,202 @@
+---
+title: "Lab7 - Non linear Regression"
+author: "A.Mayuri(2348133)"
+date: "2024-01-05"
+output: word_document
+---
+
+## Problem
+
+By using the inbuilt data set "pressure" in R, 
+
+1)fit a suitable linear regression model that relates pressure and temperature.
+
+2) perform residual analysis and comment about the possibility of modelling non linear regression model for the data set.
+
+## Introduction:
+
+Non linear regression model:
+
+Nonlinear regression is a mathematical function that uses a generated line – typically a curve – to fit an equation to some data.
+
+The sum of squares is used to determine the fitness of a regression model, which is computed by calculating the difference between the mean and every point of data. 
+
+## Analysis:
+
+### Importing Data set
+
+```{r}
+data("pressure")
+pressure
+```
+
+### Plotting and correlation
+```{r}
+plot(pressure$temperature,pressure$pressure)
+cor(pressure$temperature,pressure$pressure)
+```
+
+## model
+
+```{r}
+coke=lm(pressure$pressure~pressure$temperature)
+summary(coke)
+plot(pressure$temperature,pressure$pressure)
+abline(coke)
+```
+Interpretation:we observe that the model is not a very good fit, thus let us try fitting a polynomial linear model.
+Also we can only fit a model of maximum polynomial degree 2 since we observe only 1 bend (minima) in the model.
+
+## Polynomial form of linear model
+
+```{r}
+# using indicator method
+hub=lm(pressure$pressure~pressure$temperature+I(pressure$temperature^2))
+summary(hub)
+```
+Interpretation:we observe that all regression  coefficients  are significant. thus let us proceed to checking the validity of the model by performing the residual analysis.
+
+
+## Residual Analysis.
+
+```{r}
+plot(pressure$temperature,pressure$pressure)
+
+lines(smooth.spline(pressure$temperature,predict(hub)),col="blue",lwd=3)# fitting the new model to the scatter plot
+
+plot(resid(hub))# residual plot
+```
+Interpretation:the model is a better fit, but the residuals are not randomn.(defies assumption of const variance) .
+
+### Normality Test
+```{r}
+# to check for res vales (Normality check)
+re1=rstandard(hub)
+re1
+
+
+plot(hub)
+shapiro.test(re1)
+```
+Interpretation:
+Shapiro wilk test : at 0.05 level of confidence we observe that p value > alpha thus we accept null hypothesis and conclude that it follows normality.
+
+
+### Hypothesis testing for constant variance :
+test for errors have constant variance through errors. use the fitted model.
+
+h0: error have const variance
+h1: error have not const variance
+```{r}
+library(lmtest)
+bptest(hub)
+```
+Interpretation:we observe pvalue (0.024)<alpha(0.05) thus we reject null hypothesis and state that the model does not have a constant variance.
+
+
+the model is a better fit, but the residuals are not randomn.(defies assumption of const variance) thus we cannot do linear regression. and step into non-linear regression model.
+
+
+## Conclusion:
+
+Thus we need to shift from linear regression to non-linear regression for the data-set.
+
+Nonlinear regression is a
+procedure that will determine the values for the parameters that minimizes the sum of the squares of the
+distances of the data points to the curve for the equation of interest. In other words, given the data point y
+and the corresponding point on the curve ˆy, nonlinear regression will minimize the sum of the their differences
+squared: SS=sum[(y − yˆ)^2]
+
+Note that the term (y − yˆ) is simply the residual for each data point. This
+type of method is referred to as a least-squares method and is only applicable if the uncertainty is normally
+distributed
+
+
+## Computer Algorithm:
+
+Computer algorithms are used to solve nonlinear regression problems. They work by iterating through
+values of the constants in the designated model until the residual sum of squares is minimized. Because of
+this, the programs have to be given an initial guess of the parameters from which to start their iterations.
+The initial guess is often based on rough calculations or intuition. For most cases, the algorithm should be
+able to determine the parameters regardless of the initial guess. However, it is possible for the algorithm to
+go in the wrong direction and never converge on a solution or for it to converge on the wrong solution. In
+short, be careful with your choice for the initial guess and always check your result to make sure it behaves
+reasonably.
+
+References:
+
+https://sites.duke.edu/bossbackup/files/2013/02/NonLinSummary.pdf
+
+(source:https://corporatefinanceinstitute.com/resources/data-science/nonlinear-regression/)
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+
+
+
+```{r}
+
+```
+
+
+```{r}
+
+```
+

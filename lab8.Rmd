@@ -1,0 +1,140 @@
+---
+title: "non-linear regression"
+author: "A.Mayuri(2348133)"
+date: "2024-01-12"
+output: word_document
+---
+
+question:
+
+The below data represents the  substrate concentration (S) and the observed velocity (v) based on an enzymology experiment. 
+
+Fit a non linear regression model that relates velocity to concentration using Michaelis-Menten equation .
+
+Analyse and examine whether you can fit a simple linear regression model that relates velocity and substrate concentration by using any suitable transformation.
+
+
+## Import dataset
+
+
+```{r }
+library(readxl)
+rate <- read_excel("C:/Users/mayur/Desktop/Mstat/Semesters/Tri-sem2/Regression/Dataset/rate.xlsx")
+View(rate)
+attach(rate)
+```
+
+```{r }
+plot(rate$S,rate$V,col="hotpink",xlab="concentration",ylab="Velocity",main="substrate concentration and velocity")
+
+
+```
+
+
+```{r }
+
+model1=nls(V~Vmax*S/(k_m+S),start=c(Vmax=72,k_m=5),data=rate)
+model1
+
+```
+
+
+
+```{r }
+summary(model1)
+```
+
+the value for k and v_max values are not zero and hence a significant value. r^2 not a good metric to study the fit since x and y are not linear . thus the value of v_max is 73.26 and k_m is 3.43
+
+
+```{r }
+confint(model1)
+```
+95% of the time the true value will lie within this range
+
+Vmax 63.302914 84.889668
+k_m   1.958589  5.794501
+
+
+```{r }
+plot(S,V,xlab="Concentration", ylab="Velocity")
+lines(S,predict(model1))
+summary(model1)
+plot(resid(model1))
+```
+
+
+```{r }
+resid(model1)
+```
+
+## normality 
+
+```{r }
+shapiro.test((resid(model1)))
+qqnorm(resid(model1))
+qqline(resid(model1))
+```
+
+since the p value is greater than alpha(0.05) thus it forllows normality condition.
+
+
+## Transformation to linear model.
+
+
+To perform linear regression, we
+need to have a function of V be linearly related to a function of [S]. This is achieved
+via taking the reciprocal of both sides of this equation.
+
+
+```{r }
+library(readxl)
+rate1 <- read_excel("C:/Users/mayur/Desktop/Mstat/Semesters/Tri-sem2/Regression/Dataset/rate1.xlsx")
+View(rate1)
+attach(rate1)
+```
+
+
+
+```{r }
+
+S_inv=1/(s)
+V_inv=1/(v)
+plot(S_inv,V_inv)
+model2=lm(V_inv~S_inv)
+model2
+
+
+```
+
+
+
+
+
+
+```{r }
+summary(model2)
+```
+
+# Normality and constant variance
+
+
+```{r }
+shapiro.test(resid(model2))
+library(lmtest)
+bptest(model2)
+```
+
+since for both p values are greater than alpha we accept null hypothesis and say that it follows normal distribution and has constant variance
+
+
+Autocorrellation:
+
+## Durbin watson for ACF
+
+h0: rho=0 there is no autocorrelation
+h1: rho=!0 there is autocorrelation
+```{r }
+dwtest(model2)
+```
+Since the pvalue is greater than alpha we fail to reject null hypothesis and conclude that there exsist no auto-correlation.

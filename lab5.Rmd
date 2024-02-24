@@ -1,0 +1,151 @@
+---
+title: "Clatherate Formation Data Lab 5"
+author: "A.Mayuri(2348133)"
+date: "2023-12-08"
+output: word_document
+---
+## Problem Statement:
+
+1. Fit a suitable linear regression model. 
+
+2. Construct a normal probability plot of the residuals. Does there seem to be any problem with the normality and constant variance assumption?If yes, what remedial measure will u perform?
+
+3. Construct and interpret a plot of the residuals.
+
+4. Are the residuals correlated?
+
+5. Is multicollinearity a potential problem in your model? If it is a problem, what is your remedy?
+
+6. Are there any outliers in the data? If it exists, how will you treat it?
+
+
+
+## Import Dataset
+```{r}
+library(readxl)
+Chem <- read_excel("C:/Users/mayur/Desktop/Mstat/Semesters/Tri-sem2/Regression/Dataset/Chem.xlsx")
+View(Chem)
+attach(Chem)
+
+```
+### 1) Understanding the Variables Using correlation
+
+```{r}
+cor(Chem)
+```
+
+We observe that there is a positive linear relation between the independent and dependent variable ie, (X1,Y) AND (X2,Y). Also there is a very low correlation between (X1,X2). Hence they are independent to each other. 
+
+### 2) Fitting a Linear Regression Model
+```{r}
+model1=lm(Chem$y~.,data = Chem)
+model1
+summary(model1)
+```
+We observe that both the independent variables have a significant linear relationship. since the values of both the independent variables are <=0.05 we reject null hypothesis and accept alternative hypothesis.ie, there exisist a linear relationship between parameter and dependent variable.
+
+
+
+
+### 3) Residual Analysis (Question3)
+```{r}
+fit1=fitted.values(model1)
+fit1
+
+# Residual analysis 
+plot(fit1,resid(model1))
+abline(0,0)
+plot(fit1,rstandard(model1))#standardized residual model
+abline(0,0)
+plot(fit1,rstudent(model1))# studentized residual model
+abline(0,0)
+
+## Residual values
+residual=resid(model1)
+residual
+
+
+```
+
+Using standard and studentized residual plot we observe that there is no pattern hence we cannot comment about both the assumption . 
+we will further check it by using the test.
+
+### 4a)Normality (Question2) and Variance
+```{r}
+# to check for res vales (Normality check)
+re1=rstandard(model1)
+re1
+
+
+plot(model1)
+shapiro.test(re1)
+```
+
+For Normality assumption using Shapiro Wilk Test
+at 0.05 level of significance the p value>=0.05 thus we fail to reject null thus the residual follow normal distribution hence the assumption of errors. This is also confirmed using the QQ residual plot
+
+### 4b) Hypothesis testing for constant variance using BP test :
+test for errors have constant variance through errors. use the fitted model.
+
+h0: error have const variance
+h1: error have not const variance
+
+```{r}
+library(lmtest)
+bptest(model1)
+
+```
+since p-value is <=0.05 we reject h0 ,thus there is no constant variance . hence the assumption of constant variance is not validated .
+we can perform a log transformation to the dependent variable and try to redefine the model.
+
+
+### 5a) Autocorrelation (question4)
+```{r}
+acf(residual)
+```
+ACF at 0 is always 1. and all acf points are not within the threshold lines from lag 1 it indicates that there is a significant autocorrelation among the residual series. However we can also confirm the same with durbin watson test procdure.
+
+
+#### b) Durbin watson for ACF
+
+h0: rho=0 there is no autocorrelation
+h1: rho=!0 there is autocorrelation
+
+```{r}
+dwtest(model1)
+```
+at 5 % level of significance, the p value (6.004e-06)<0.05, we reject the null hypothesis that there is a  significant auto-correlation.
+ie,rho=!=0.
+
+
+### 6)Multi-collilinearity  (Question5):
+We observe that the there could be no multi-collilinearity between independent variable since the correlation between them is (-0.12)<0.7. hence their VIF would be less than 5.
+
+For confirmation,
+
+```{r}
+library(car)
+vif(model1)
+
+```
+As stated the VIF<=5 thus there is no multi-collilinearity.
+
+
+
+### 7)Outliers (Question6)
+```{r}
+
+rstandard(model1)
+```
+
+Here we observe that there is no observation below -3 and above 3. hence there are no outliers.
+
+
+
+```{r}
+
+```
+
+
+
+

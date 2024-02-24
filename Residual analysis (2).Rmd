@@ -1,0 +1,136 @@
+---
+title: "Lab4- Residual Analysis"
+author: "A.Mayuri(2348133)"
+date: "2023-11-24"
+output: word_document
+---
+## Problem: 
+
+Take a suitable data set for the Simple linear regression model and analyze it by establishing the linear relationship between the variables and hence examine the various residual plots to comment on the adequacy of the model.
+
+## Introduction: 
+Here we are interested in doing a residual analysis for the dependent variable(miles per gallon) which measures the eeficiency of the vehicle vs the independent variable(x) as engine displacement.
+
+## About the Variables:
+
+1) data set on the gasoline mileage performance of 32 different automobiles,
+2) Dependent Variable(y) is miles per gallon. ie, the efficiency of the automobile.
+3) independent variable (X) is engine displacement.
+
+## Procedure:
+#### Step1: Import Data set
+```{r}
+library(readxl)
+Car <- read_excel("C:/Users/mayur/Desktop/Mstat/Semesters/Tri-sem2/Regression/Dataset/Car.xlsx")
+View(Car)
+attach(Car)
+```
+
+#### Step2: Preliminary Understanding of the Model
+
+##### 1) Visualization and Correlation
+
+Let us plot the graph between the dependent and independent variable to visualize their relation also their correlation to understand the strength of the relation.
+```{r}
+#Plotting the dataset
+plot(Car$x1,Car$y)
+# Finding the correlation
+cor(Car$x1,Car$y)
+
+```
+Interpretation: we get a  strong negative linear relationship between the independent and dependent variables. with a karl pearson correlation coefficient of -0.885896
+
+##### 2): Fit the model
+```{r}
+reg=lm(Car$y~Car$x1)
+reg #fitting a sinple regression model
+```
+we got the value of beta(0)=33.61622 and value of beta(1)=-0.04719 based on sample. since sign of beta 1 is negative there is a negative linear relationship between the variables.
+for each additional 1 unit of engine displacement the efficiency of the vehicle decreases by 0.04719.
+
+##### 3) Fitting the regression line
+```{r}
+
+plot(Car$x1,Car$y)
+abline(reg)
+```
+Hence the regression equation is given by 
+y= 33.61922 -0.04719*X +E
+where Y is the depenent variable
+x-independent variable
+and E is the residual.
+
+
+##### 4) Overall Fit
+
+the overall fit of the regression model can be obtained with summary command. which is required to devise the hypothesis and goodness of fit
+```{r}
+summary(reg)
+```
+Hypothesis Testing::
+
+H0= Beta(1)=0
+H1= Beta(1)=! 0
+from the above table the p value in the line of units is 1.59e which is less than 0.05 level of significance.hence we reject null hypothesis and hence beta (1)=! 0 . thus these exist a significant linear relationship between the variables., ie there is a significant linear relationship between efficiency and misplacement of engine.
+
+
+
+## Residual Analysis
+```{r}
+fit1=fitted.values(reg)
+fit1
+
+# Residual analysis 
+plot(fit1,resid(reg))
+abline(0,0)
+plot(fit1,rstandard(reg))#standardized residual model
+abline(0,0)
+plot(fit1,rstudent(reg))# studentized residual model
+abline(0,0)
+
+
+
+```
+
+Using standard and studentized residual plot we observe that the residuals are within the bandwidth and  hence the variables are linear and have a constant variance.
+
+## Normality
+
+
+```{r}
+# to check for res vales (Normality check)
+re1=rstandard(reg)
+re1
+
+
+plot(reg)
+shapiro.test(re1)
+```
+Interpretation from the Graphs:
+
+1 plot-residual vs fitted:
+flagged the possible outline as 9,12,15. assumption of linearity and constant variance.
+
+2 plot- assumption of normality: 
+the observation lie along the line thus the error terms follow a normal distribution.
+
+the plot 3 shows the inverted u curve for std residual vs fitted values however it lies within the band range (but we observe an U shape). hence it may or may not have a constant variance.
+
+However conducting specific hypothesis testing for each of these assumption would be a better and accurate form of conclusion.
+Further suggested tests are:
+Bp test -constant variance
+kolmogrov test for normality.
+
+## Kolmogrov Test:
+
+### Hypothesis testing for constant variance :
+test for errors have constant variance through errors. use the fitted model.
+
+h0: error have const variance
+h1: error have not const variance
+```{r}
+library(lmtest)
+bptest(reg)
+```
+
+the p value is 0.02591< 0.05 level of significance thus we accept null hypothesis and conclude that there is a constant variance for the errors.

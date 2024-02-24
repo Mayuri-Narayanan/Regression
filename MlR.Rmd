@@ -1,0 +1,44 @@
+---
+title: "Prediction of Car Prices"
+author: "A.Mayuri(2348133)"
+date: "2023-11-23"
+output: word_document
+---
+
+```{r }
+library(readxl)
+Car <- read_excel("C:/Users/mayur/Desktop/Mstat/Semesters/Tri-sem2/Regression/Dataset/Car.xlsx")
+View(Car)
+attach cars
+```
+
+
+```{r }
+
+```
+
+
+
+```{r }
+
+```
+
+
+
+
+```{r }
+
+```
+
+
+
+
+```{r }
+
+```
+
+
+
+```{r }
+
+```
